@@ -1,2 +1,3 @@
-public class StudentDatabase implements Database{
+public class StudentDatabase implements Database extends FileHandling{
+
 }
