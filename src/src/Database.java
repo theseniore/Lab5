@@ -5,6 +5,6 @@ public interface Database {
     ArrayList<Student> getAllStudents();
     Student searchByID(int id);
     void updateStudent(Student s);
-    ArrayList<Student> searchByName(String name);
+    Student searchByName(String name);
     void deleteStudent(Student s);
 }

@@ -2,6 +2,10 @@ import java.util.ArrayList;
 
 public class StudentDatabase extends FileHandling implements Database {
     private ArrayList <Student> Records = loadFromFile();
+    public StudentDatabase()
+    {
+        this.Records = new ArrayList<>();
+    }
     @Override
     public void addStudent(Student s) {
     this.Records.add(s);
@@ -10,9 +14,18 @@ public class StudentDatabase extends FileHandling implements Database {
 
     @Override
     public ArrayList<Student> getAllStudents() {
+
         return this.Records;
     }
-
+    public boolean contains(int key )
+    {
+        for(Student rec: this.Records)
+        {
+            if(rec.getStudentId()==(key))
+                return true;
+        }
+        return false;
+    }
     @Override
     public Student searchByID(int id) {
         for(Student  d: this.Records)

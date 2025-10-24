@@ -6,15 +6,13 @@ public class Student {
     private String Gender;
     private String Department;
     private float GPA;
-    private String Password;
-    public Student(int StudentID, String FullName, int Age, String Gender, String Department, float GPA, String Password) {
+    public Student(int StudentID, String FullName, int Age, String Gender, String Department, float GPA) {
         this.StudentId=StudentID;
         this.FullName=FullName;
         this.Age=Age;
         this.Gender=Gender;
         this.Department=Department;
         this.GPA=GPA;
-        this.Password=Password;
     }
     public void setStudentId(int StudentId) {
         this.StudentId=StudentId;
@@ -52,15 +50,9 @@ public class Student {
     public float getGPA() {
         return GPA;
     }
-    public void setPassword(String Password) {
-        this.Password=Password;
-    }
-    public String getPassword() {
-        return Password;
-    }
     public String lineRepresentation()
     {
-        String Line = this.StudentId+","+this.FullName+","+this.Age+","+this.Gender+","+this.Department+","+this.GPA+","+this.Password;
+        String Line = this.StudentId+","+this.FullName+","+this.Age+","+this.Gender+","+this.Department+","+this.GPA;
         return Line;
     }
 }

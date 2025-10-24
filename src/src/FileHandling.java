@@ -36,8 +36,7 @@ public class FileHandling {
         String Gender = data[3];
         String Department = data[4];
         float GPA = Float.parseFloat(data[5]);
-        String Password = data[6];
-        e = new Student( StudentId, Name,  Age, Gender, Department,  GPA,Password);
+        e = new Student( StudentId, Name,  Age, Gender, Department,  GPA);
         return e;
     }
 
