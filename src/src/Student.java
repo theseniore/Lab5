@@ -1,8 +1,5 @@
-<<<<<<< HEAD
-public class Student {
 
-=======
-class Student {
+public class Student {
     private int StudentId;
     private String FullName;
     private int Age;
@@ -61,5 +58,4 @@ class Student {
     public String getPassword() {
         return Password;
     }
->>>>>>> 2840ff88f08d762d6702c5d95552cf4acf2821b4
 }
