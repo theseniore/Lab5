@@ -1,2 +1,2 @@
-public class StudentDatabase {
+public class StudentDatabase implements Database{
 }
