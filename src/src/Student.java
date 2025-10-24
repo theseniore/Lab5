@@ -1,4 +1,4 @@
-    
+
 public class Student {
     private int StudentId;
     private String FullName;
@@ -57,5 +57,10 @@ public class Student {
     }
     public String getPassword() {
         return Password;
+    }
+    public String lineRepresentation()
+    {
+        String Line = this.StudentId+","+this.FullName+","+this.Age+","+this.Gender+","+this.Department+","+this.GPA+","+this.Password;
+        return Line;
     }
 }
