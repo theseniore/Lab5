@@ -1,23 +1,20 @@
 import java.util.ArrayList;
 
 public class StudentDatabase extends FileHandling implements Database {
-    private ArrayList <Student> Records = new ArrayList<>();
+    private ArrayList <Student> Records = loadFromFile();
     @Override
     public void addStudent(Student s) {
-    this.Records = loadFromFile();
     this.Records.add(s);
     saveToFile(this.Records);
     }
 
     @Override
     public ArrayList<Student> getAllStudents() {
-        this.Records = loadFromFile();
         return this.Records;
     }
 
     @Override
     public Student searchByID(int id) {
-        this.Records = loadFromFile();
         for(Student  d: this.Records)
         {
             int x = d.getStudentId();
@@ -29,7 +26,6 @@ public class StudentDatabase extends FileHandling implements Database {
 
     @Override
     public void updateStudent(Student s) {
-        this.Records = loadFromFile();
         for(Student d:this.Records)
         {
             if(s.equals(d))
@@ -39,12 +35,18 @@ public class StudentDatabase extends FileHandling implements Database {
     }
 
     @Override
-    public ArrayList<Student> searchByName(String name) {
-        return null;
+    public Student searchByName(String name) {
+    for(Student d:this.Records)
+    {
+        if(name.equals(d.getFullName()))
+            return d;
+    }
+    return null;
     }
 
     @Override
     public void deleteStudent(Student s) {
-
+        this.Records.remove(s);
+        saveToFile(this.Records);
     }
 }
