@@ -29,7 +29,7 @@ public class FileHandling {
     public static Student createRecordFrom(String line) {
         Student e;
         String[] data = line.split(",");
-        String StudentId=data[0];
+        int StudentId= Integer.parseInt(data[0]);
         String Name = data[1];
         int Age = Integer.parseInt(data[2]);
         String Gender = data[3];
