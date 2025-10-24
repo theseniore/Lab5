@@ -15,6 +15,7 @@ public class FileHandling {
                 while ((line = r.readLine()) != null) {
                     e = createRecordFrom(line);
                     students.add(e);
+                    r.close();
                     return students;
                 }
 
