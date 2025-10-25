@@ -61,7 +61,7 @@ public class GUI extends JFrame {
         JButton displayBtn = new JButton("Display All Students");
 
         // Add action listeners for navigation
-        addBtn.addActionListener(e -> showMainMenu());
+        addBtn.addActionListener(e -> showAddStudentWindow());
         updateBtn.addActionListener(e -> showUpdateStudentWindow());
         deleteBtn.addActionListener(e -> showDeleteStudentWindow());
         searchBtn.addActionListener(e -> showSearchStudentWindow());
