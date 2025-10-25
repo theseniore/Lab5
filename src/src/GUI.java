@@ -273,7 +273,7 @@ public class GUI extends JFrame {
 
         // Create input panel
         JPanel panel = new JPanel(new GridLayout(1, 2, 10, 10));
-        panel.setBorder(BorderFactory.createEmptyBorder(50, 80, 50, 80));
+        panel.setBorder(BorderFactory.createEmptyBorder(130, 80, 130, 80));
 
         // Create input field
         JTextField keyField = new JTextField();
