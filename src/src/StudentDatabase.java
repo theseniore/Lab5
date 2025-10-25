@@ -1,10 +1,15 @@
 import java.util.ArrayList;
 
 public class StudentDatabase extends FileHandling implements Database {
-    private ArrayList <Student> Records = loadFromFile();
+    private final ArrayList <Student> Records;
     public StudentDatabase()
     {
-        this.Records = new ArrayList<>();
+        ArrayList<Student> loaded = FileHandling.loadFromFile();
+        if (loaded != null) {
+            Records = loaded;
+        } else {
+            Records = new ArrayList<>();
+        }
     }
     @Override
     public void addStudent(Student s) {

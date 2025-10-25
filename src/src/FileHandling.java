@@ -15,10 +15,9 @@ public class FileHandling {
                 while ((line = r.readLine()) != null) {
                     e = createRecordFrom(line);
                     students.add(e);
-                    r.close();
-                    return students;
                 }
-
+                r.close();
+                return students;
             } catch (IOException e) {
                 System.out.println("this file cannot be opened!");
 

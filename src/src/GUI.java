@@ -74,7 +74,7 @@ public class GUI extends JFrame {
         JTextField idField = new JTextField();
         JTextField nameField = new JTextField();
         JTextField ageField = new JTextField();
-        JTextField genderField = new JTextField();
+        JComboBox<String> genderField = new JComboBox<>(new String[]{"Male", "Female"});
         JTextField deptField = new JTextField();
         JTextField gpaField = new JTextField();
 
@@ -111,7 +111,7 @@ public class GUI extends JFrame {
                 // Get other field values
                 String name = nameField.getText();
                 int age = Integer.parseInt(ageField.getText());
-                String gender = genderField.getText();
+                String gender = genderField.getSelectedItem().toString();
                 String dept = deptField.getText();
                 float gpa = Float.parseFloat(gpaField.getText());
 
@@ -131,7 +131,6 @@ public class GUI extends JFrame {
                 idField.setText("");
                 nameField.setText("");
                 ageField.setText("");
-                genderField.setText("");
                 deptField.setText("");
                 gpaField.setText("");
                 
@@ -172,7 +171,7 @@ public class GUI extends JFrame {
 
         // Create input components
         JTextField idOrNameField = new JTextField();
-        JComboBox<String> fieldBox = new JComboBox<>(new String[]{"Full Name", "Age", "Gender", "Department", "GPA"});
+        JComboBox<String> fieldBox = new JComboBox<>(new String[]{"Full Name", "Age", "Department", "GPA"});
         JTextField newValueField = new JTextField();
 
         // Add components to panel
@@ -222,9 +221,6 @@ public class GUI extends JFrame {
                         break;
                     case "Age": 
                         student.setAge(Integer.parseInt(newVal)); 
-                        break;
-                    case "Gender": 
-                        student.setGender(newVal); 
                         break;
                     case "Department": 
                         student.setDepartment(newVal); 
@@ -424,35 +420,59 @@ public class GUI extends JFrame {
     private void showAllStudentsWindow() {
         // Clear current content
         getContentPane().removeAll();
-        setLayout(new BorderLayout());
+        setLayout(new BorderLayout(10, 10));
 
-        // Create text area for displaying students
-        JTextArea area = new JTextArea();
-        area.setEditable(false); // Make it read-only
-        
-        // Get all students from database
-        ArrayList<Student> studentList = db.getAllStudents();
+        try {
+            ArrayList<Student> students = db.getAllStudents();
 
-        // Build display string
-        StringBuilder displayText = new StringBuilder();
-        for (Student student : studentList) {
-            displayText.append(student.lineRepresentation()).append("\n");
+            if (students.isEmpty()) {
+                JLabel emptyLabel = new JLabel("No students available.", SwingConstants.CENTER);
+                emptyLabel.setFont(new Font("Arial", Font.BOLD, 16));
+                add(emptyLabel, BorderLayout.CENTER);
+            } else {
+                // Table headers
+                String[] columnNames = {"ID", "Name", "Age", "Gender", "Department", "GPA"};
+                Object[][] data = new Object[students.size()][6];
+
+                // Fill table data
+                for (int i = 0; i < students.size(); i++) {
+                    Student s = students.get(i);
+                    data[i][0] = s.getStudentId();
+                    data[i][1] = s.getFullName();
+                    data[i][2] = s.getAge();
+                    data[i][3] = s.getGender();
+                    data[i][4] = s.getDepartment();
+                    data[i][5] = s.getGPA();
+                }
+
+                // Create table
+                JTable table = new JTable(data, columnNames);
+                table.setRowHeight(25);
+                table.setFillsViewportHeight(true);
+                table.setAutoCreateRowSorter(true);
+                table.setEnabled(false); // make it read-only
+
+                // Add scroll pane
+                JScrollPane scrollPane = new JScrollPane(table);
+                add(scrollPane, BorderLayout.CENTER);
+            }
+
+            // Back button
+            JButton backBtn = new JButton("Back");
+            backBtn.addActionListener(e -> showMainMenu());
+            JPanel btnPanel = new JPanel();
+            btnPanel.add(backBtn);
+            add(btnPanel, BorderLayout.SOUTH);
+
+            revalidate();
+            repaint();
+
+        } catch (Exception e) {
+            JLabel errorLabel = new JLabel("Error loading student data.", SwingConstants.CENTER);
+            add(errorLabel, BorderLayout.CENTER);
+            revalidate();
+            repaint();
         }
-
-        // Set text to area (or display message if no students)
-        area.setText(displayText.length() > 0 ? displayText.toString() : "No students available.");
-
-        // Create back button
-        JButton backBtn = new JButton("Back");
-        backBtn.addActionListener(e -> showMainMenu());
-
-        // Add components to frame
-        add(new JScrollPane(area), BorderLayout.CENTER);
-        add(backBtn, BorderLayout.SOUTH);
-
-        // Refresh display
-        revalidate();
-        repaint();
     }
 
     /**
