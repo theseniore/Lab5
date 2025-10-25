@@ -3,11 +3,6 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 
-/**
- * Student Management System GUI
- * Main application window that provides CRUD operations for student records
- * Uses Swing for GUI components and follows OOP principles
- */
 public class GUI extends JFrame {
     
     // Database instance for handling student data operations
