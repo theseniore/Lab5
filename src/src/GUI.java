@@ -16,7 +16,29 @@ public class GUI extends JFrame {
         setLocationRelativeTo(null); // Center the window on screen
 
         // Display the main menu
-        showMainMenu();
+        loginMenu();
+    }
+    private void loginMenu(){
+        JPanel panel = new JPanel(new GridLayout(5, 1, 10, 10)); // rows, cols, hgap, vgap
+        panel.setBorder(BorderFactory.createEmptyBorder(100, 200, 100, 200));
+        JButton login = new JButton("Log in");
+        JTextField username = new JTextField();
+        JPasswordField password = new JPasswordField();
+        login.addActionListener(e -> {
+            if (Validation.isValiduser(username.getText(), password.getText())) {
+                showMainMenu();
+            } else {
+                JOptionPane.showMessageDialog(null, "Invalid username or password!");
+            }
+        });
+        login.setSize(50, 50);
+        panel.add(new JLabel("Username:"));
+        panel.add(username);
+        panel.add(new JLabel("Password:"));
+        panel.add(password);
+        panel.add(login);
+        ;
+     add(panel);
     }
 
     /**
@@ -39,7 +61,7 @@ public class GUI extends JFrame {
         JButton displayBtn = new JButton("Display All Students");
 
         // Add action listeners for navigation
-        addBtn.addActionListener(e -> showAddStudentWindow());
+        addBtn.addActionListener(e -> showMainMenu());
         updateBtn.addActionListener(e -> showUpdateStudentWindow());
         deleteBtn.addActionListener(e -> showDeleteStudentWindow());
         searchBtn.addActionListener(e -> showSearchStudentWindow());

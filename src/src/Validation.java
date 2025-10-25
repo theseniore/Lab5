@@ -15,6 +15,14 @@ public class Validation{
     public static boolean isValidName(String name) {
         return name != null && !name.trim().isEmpty();
     }
+    public static boolean isValiduser(String name,String password) {
+        String n="admin";
+        String p="admin";
+        if(name.equals(n) && password.equals(p)) {
+            return true;
+        }
+        return false;
+    }
 
 }
 
