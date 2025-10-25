@@ -30,6 +30,7 @@ public class GUI extends JFrame {
         JPanel panel = new JPanel(new GridLayout(5, 1, 10, 10));
         panel.setBorder(BorderFactory.createEmptyBorder(40, 100, 40, 100));
 
+
         // Create navigation buttons
         JButton addBtn = new JButton("Add Student");
         JButton updateBtn = new JButton("Update Student");
@@ -346,6 +347,7 @@ public class GUI extends JFrame {
 
         // Create search components
         JTextField searchField = new JTextField();
+        JLabel label = new JLabel("Enter Student Name Or ID:");
         JButton searchBtn = new JButton("🔍 Search");
         searchBtn.setPreferredSize(new Dimension(120, 30)); // Make the button bigger
         JTextArea resultArea = new JTextArea(5, 30);
@@ -353,6 +355,7 @@ public class GUI extends JFrame {
 
         // Create top panel for search input
         JPanel topPanel = new JPanel(new BorderLayout(10, 10));
+        topPanel.add(label,BorderLayout.NORTH);
         topPanel.add(searchField, BorderLayout.CENTER);
         topPanel.add(searchBtn, BorderLayout.EAST);
 
