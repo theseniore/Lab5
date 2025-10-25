@@ -8,9 +8,6 @@ public class GUI extends JFrame {
     // Database instance for handling student data operations
     private StudentDatabase db = new StudentDatabase();
 
-    /**
-     * Constructor - Initializes the main application window
-     */
     public GUI() {
         // Set window properties
         setTitle("Student Management System");
