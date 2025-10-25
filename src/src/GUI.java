@@ -14,6 +14,9 @@ public class GUI extends JFrame {
         setSize(600, 400);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null); // Center the window on screen
+        ImageIcon img = new ImageIcon(getClass().getResource("/student.png"));
+        setIconImage(img.getImage());
+
 
         // Display the main menu
         loginMenu();
