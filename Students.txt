@@ -1,4 +1,2 @@
-5343,Samy Adly,43,Male,CCE,3.0
-9333,Akrm Saad,20,Male,CCE,3.0
-9373,Youssef Hossam,20,Male,CCE,4.0
-9519,ahmed,19,Male,CCE,2.9
+9373,Youssef Hossam,15,Male,CCE,4.0
+9555,Ahmed,20,Male,CCE,2.0

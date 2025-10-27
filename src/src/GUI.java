@@ -1,4 +1,6 @@
 import javax.swing.*;
+import javax.swing.event.TableModelEvent;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
@@ -65,7 +67,7 @@ public class GUI extends JFrame {
 
         // Add action listeners for navigation
         addBtn.addActionListener(e -> showAddStudentWindow());
-        updateBtn.addActionListener(e -> showUpdateStudentWindow());
+        updateBtn.addActionListener(e -> showUpdateOrSearchWindow());
         deleteBtn.addActionListener(e -> showDeleteStudentWindow());
         searchBtn.addActionListener(e -> showSearchStudentWindow());
         displayBtn.addActionListener(e -> showAllStudentsWindow());
@@ -185,174 +187,319 @@ public class GUI extends JFrame {
     /**
      * Displays the Update Student form window
      */
-    private void showUpdateStudentWindow() {
-        // Clear current content
-        getContentPane().removeAll();
-        setLayout(new BorderLayout());
+    private void showUpdateOrSearchWindow() {
+        JFrame frame = new JFrame("Update or Search Student");
+        frame.setSize(900, 500);
+        frame.setLocationRelativeTo(null);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setLayout(null);
 
-        // Create form panel
-        JPanel panel = new JPanel(new GridLayout(3, 2, 10, 10));
-        panel.setBorder(BorderFactory.createEmptyBorder(30, 80, 30, 80));
+        String[] columns = {"ID", "Name", "Age", "Gender", "Department", "GPA"};
+        DefaultTableModel model = new DefaultTableModel(columns, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+        JTable table = new JTable(model);
+        JScrollPane scrollPane = new JScrollPane(table);
+        scrollPane.setBounds(30, 30, 500, 250);
+        frame.add(scrollPane);
 
-        // Create input components
-        JTextField idOrNameField = new JTextField();
-        JComboBox<String> fieldBox = new JComboBox<>(new String[]{"Full Name", "Age", "Department", "GPA"});
+        ArrayList<Student> all = db.getAllStudents();
+        for (Student s : all) {
+            model.addRow(new Object[]{
+                    s.getStudentId(),
+                    s.getFullName(),
+                    s.getAge(),
+                    s.getGender(),
+                    s.getDepartment(),
+                    s.getGPA()
+            });
+        }
+
+        JLabel searchLabel = new JLabel("Enter Name or ID ( You must search for the student ):");
+        searchLabel.setBounds(30, 250, 350, 100);
+        JTextField searchField = new JTextField();
+        searchField.setBounds(180, 310, 150, 25);
+        JButton searchButton = new JButton("Search");
+        searchButton.setBounds(340, 310, 90, 25);
+        frame.add(searchLabel);
+        frame.add(searchField);
+        frame.add(searchButton);
+
+        JLabel fieldLabel = new JLabel("Field to Update:");
+        fieldLabel.setBounds(580, 50, 200, 25);
+        frame.add(fieldLabel);
+
+        JComboBox<String> comboBox = new JComboBox<>(new String[]{"Name", "Age", "Department", "GPA"});
+        comboBox.setBounds(580, 80, 200, 25);
+        frame.add(comboBox);
+
+        JLabel newValueLabel = new JLabel("New Value:");
+        newValueLabel.setBounds(580, 120, 200, 25);
+        frame.add(newValueLabel);
+
         JTextField newValueField = new JTextField();
+        newValueField.setBounds(580, 150, 200, 25);
+        frame.add(newValueField);
 
-        // Add components to panel
-        panel.add(new JLabel("Enter Student ID or Name:"));
-        panel.add(idOrNameField);
-        panel.add(new JLabel("Select Field to Update:"));
-        panel.add(fieldBox);
-        panel.add(new JLabel("New Value:"));
-        panel.add(newValueField);
+        JButton saveButton = new JButton("Save");
+        saveButton.setBounds(580, 200, 90, 30);
+        frame.add(saveButton);
 
-        // Create action buttons
-        JButton updateBtn = new JButton("Update");
-        JButton backBtn = new JButton("Back");
+        JButton backButton = new JButton("Back");
+        backButton.setBounds(690, 200, 90, 30);
+        frame.add(backButton);
 
-        // Update button action listener
-        updateBtn.addActionListener(e -> {
-            String key = idOrNameField.getText().trim();
-            Student student = null;
-            
-            try {
-                // Try to search by ID first
-                student = db.searchByID(Integer.parseInt(key));
-            } catch (Exception ignored) {
-                // If ID search fails, continue to name search
-            }
-            
-            // If not found by ID, try searching by name
-            if (student == null) {
-                student = db.searchByName(key);
-            }
-            
-            // If student still not found, show error message
-            if (student == null) {
-                JOptionPane.showMessageDialog(this, "Student not found!");
-                return;
-            }
+        searchButton.addActionListener(e -> {
+            String query = searchField.getText().trim();
+            model.setRowCount(0);
 
-            // Get selected field and new value
-            String selectedField = (String) fieldBox.getSelectedItem();
-            String newVal = newValueField.getText().trim();
-
-            try {
-                // Update the selected field based on user choice
-                switch (selectedField) {
-                    case "Full Name": 
-                        student.setFullName(newVal); 
-                        break;
-                    case "Age": 
-                        student.setAge(Integer.parseInt(newVal)); 
-                        break;
-                    case "Department": 
-                        student.setDepartment(newVal); 
-                        break;
-                    case "GPA": 
-                        student.setGPA(Float.parseFloat(newVal)); 
-                        break;
+            if (query.isEmpty()) {
+                for (Student s : db.getAllStudents()) {
+                    model.addRow(new Object[]{
+                            s.getStudentId(),
+                            s.getFullName(),
+                            s.getAge(),
+                            s.getGender(),
+                            s.getDepartment(),
+                            s.getGPA()
+                    });
                 }
-                
-                // Save changes to file
-                db.saveToFile(db.getAllStudents());
-                JOptionPane.showMessageDialog(this, "Student updated successfully!");
-                
-                // Clear input fields
-                idOrNameField.setText("");
-                newValueField.setText("");
-                
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this, "Invalid update value!");
+            } else {
+                try {
+                    int id = Integer.parseInt(query);
+                    Student s = db.searchByID(id);
+                    if (s != null) {
+                        model.addRow(new Object[]{
+                                s.getStudentId(),
+                                s.getFullName(),
+                                s.getAge(),
+                                s.getGender(),
+                                s.getDepartment(),
+                                s.getGPA()
+                        });
+                    } else {
+                        JOptionPane.showMessageDialog(frame, "No record found with ID: " + id);
+                    }
+                } catch (NumberFormatException ex) {
+                    Student s = db.searchByName(query);
+                    if (s != null) {
+                        model.addRow(new Object[]{
+                                s.getStudentId(),
+                                s.getFullName(),
+                                s.getAge(),
+                                s.getGender(),
+                                s.getDepartment(),
+                                s.getGPA()
+                        });
+                    } else {
+                        JOptionPane.showMessageDialog(frame, "No record found with Name: " + query);
+                    }
+                }
             }
         });
 
-        // Back button action listener
-        backBtn.addActionListener(e -> showMainMenu());
+        saveButton.addActionListener(e -> {
+            String query = searchField.getText().trim();
+            if (query.isEmpty()) {
+                JOptionPane.showMessageDialog(frame, "Please enter ID or Name first.");
+                return;
+            }
 
-        // Create button panel
-        JPanel btnPanel = new JPanel();
-        btnPanel.add(updateBtn);
-        btnPanel.add(backBtn);
+            String field = comboBox.getSelectedItem().toString();
+            String newValue = newValueField.getText().trim();
+            if (newValue.isEmpty()) {
+                JOptionPane.showMessageDialog(frame, "Please enter the new value.");
+                return;
+            }
 
-        // Add components to frame
-        add(panel, BorderLayout.CENTER);
-        add(btnPanel, BorderLayout.SOUTH);
-        
-        // Refresh display
-        revalidate();
-        repaint();
+            try {
+                Student s;
+                try {
+                    int id = Integer.parseInt(query);
+                    s = db.searchByID(id);
+                } catch (NumberFormatException ex) {
+                    s = db.searchByName(query);
+                }
+
+                if (s == null) {
+                    JOptionPane.showMessageDialog(frame, "No record found to update.");
+                    return;
+                }
+
+                boolean valid = true;
+
+                switch (field) {
+                    case "Name" -> {
+                        if (Validation.isValidName(newValue)) {
+                            s.setFullName(newValue);
+                        } else {
+                            valid = false;
+                            JOptionPane.showMessageDialog(frame, "Invalid Name. Please enter a valid name.");
+                        }
+                    }
+
+                    case "Age" -> {
+                        try {
+                            int age = Integer.parseInt(newValue);
+                            if (Validation.isValidAge(age)) {
+                                s.setAge(age);
+                            } else {
+                                valid = false;
+                                JOptionPane.showMessageDialog(frame, "Invalid Age. Age must be between 1 and 98.");
+                            }
+                        } catch (NumberFormatException ex) {
+                            valid = false;
+                            JOptionPane.showMessageDialog(frame, "Please enter a valid number for Age.");
+                        }
+                    }
+
+                    case "Department" -> {
+                        if (!newValue.trim().isEmpty()) {
+                            s.setDepartment(newValue);
+                        } else {
+                            valid = false;
+                            JOptionPane.showMessageDialog(frame, "Department name cannot be empty.");
+                        }
+                    }
+
+                    case "GPA" -> {
+                        try {
+                            float gpa = Float.parseFloat(newValue);
+                            if (Validation.isValidGPA(gpa)) {
+                                s.setGPA(gpa);
+                            } else {
+                                valid = false;
+                                JOptionPane.showMessageDialog(frame, "Invalid GPA. It must be between 0 and 4.");
+                            }
+                        } catch (NumberFormatException ex) {
+                            valid = false;
+                            JOptionPane.showMessageDialog(frame, "Please enter a valid decimal number for GPA.");
+                        }
+                    }
+                }
+
+                if (valid) {
+                    db.updateStudent(s);
+                    JOptionPane.showMessageDialog(frame, "Record updated successfully!");
+
+                    model.setRowCount(0);
+                    model.addRow(new Object[]{
+                            s.getStudentId(),
+                            s.getFullName(),
+                            s.getAge(),
+                            s.getGender(),
+                            s.getDepartment(),
+                            s.getGPA()
+                    });
+                }
+
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(frame, "An unexpected error occurred.");
+            }
+        });
+
+        backButton.addActionListener(e -> frame.dispose());
+
+        frame.setVisible(true);
     }
-
     /**
      * Displays the Delete Student window
      */
     private void showDeleteStudentWindow() {
         // Clear current content
+        // Clear current content
         getContentPane().removeAll();
-        setLayout(new BorderLayout());
+        setLayout(new BorderLayout(10, 10));
+        JLabel label = new JLabel("Select Student to Delete:");
 
-        // Create input panel
-        JPanel panel = new JPanel(new GridLayout(1, 2, 10, 10));
-        panel.setBorder(BorderFactory.createEmptyBorder(130, 80, 130, 80));
+        try {
+            ArrayList<Student> students = db.getAllStudents();
 
-        // Create input field
-        JTextField keyField = new JTextField();
-        panel.add(new JLabel("Enter Student ID or Name:"));
-        panel.add(keyField);
+            if (students.isEmpty()) {
+                JLabel emptyLabel = new JLabel("No students available.", SwingConstants.CENTER);
+                emptyLabel.setFont(new Font("Arial", Font.BOLD, 16));
+                add(emptyLabel, BorderLayout.CENTER);
+            } else {
 
-        // Create action buttons
-        JButton deleteBtn = new JButton("Delete");
-        JButton backBtn = new JButton("Back");
+                String[] columnNames = {"ID", "Name", "Age", "Gender", "Department", "GPA"};
+                Object[][] data = new Object[students.size()][6];
 
-        // Delete button action listener
-        deleteBtn.addActionListener(e -> {
-            String key = keyField.getText().trim();
-            Student student = null;
-            
-            try {
-                // Try to search by ID first
-                student = db.searchByID(Integer.parseInt(key));
-            } catch (Exception ignored) {
-                // If ID search fails, continue to name search
+                for (int i = 0; i < students.size(); i++) {
+                    Student s = students.get(i);
+                    data[i][0] = s.getStudentId();
+                    data[i][1] = s.getFullName();
+                    data[i][2] = s.getAge();
+                    data[i][3] = s.getGender();
+                    data[i][4] = s.getDepartment();
+                    data[i][5] = s.getGPA();
+                }
+
+                JTable table = new JTable(data, columnNames)
+                {
+                    @Override
+                    public boolean isCellEditable(int row, int column) {
+                        return false;
+                    }
+                };
+                table.setRowHeight(25);
+                table.setFillsViewportHeight(true);
+                table.setAutoCreateRowSorter(true);
+                table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+                table.setSelectionBackground(Color.BLUE);
+                table.setSelectionForeground(Color.WHITE);
+                table.setShowGrid(true);
+
+                table.addMouseListener(new java.awt.event.MouseAdapter() {
+                    private void onRowClick(int modelRow, JTable table) {
+                        String name = table.getValueAt(modelRow, 1).toString();
+                        int id = Integer.parseInt(table.getValueAt(modelRow, 0).toString());
+                        db.deleteStudent(db.searchByID(id));
+                        JOptionPane.showMessageDialog(null, "Student Deleted Successfully");
+                        showDeleteStudentWindow();
+                    }
+                    @Override
+                    public void mouseClicked(java.awt.event.MouseEvent e) {
+                        int row = table.rowAtPoint(e.getPoint());
+                        if (row >= 0) {
+                            int modelRow = table.convertRowIndexToModel(row);
+                            String id = table.getValueAt(modelRow, 0).toString();
+                            int choice = JOptionPane.showConfirmDialog(
+                                    null,
+                                    "Do you want to delete this student \n" + "ID: " + id + "?", "Confirm Action", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+                            if (choice == JOptionPane.YES_OPTION) {
+                                onRowClick(modelRow, table);
+                            }
+                        }
+                    }
+                });
+
+                // Add scroll pane
+                JScrollPane scrollPane = new JScrollPane(table);
+                add(scrollPane, BorderLayout.CENTER);
             }
-            
-            // If not found by ID, try searching by name
-            if (student == null) {
-                student = db.searchByName(key);
-            }
-            
-            // If student not found, show error message
-            if (student == null) {
-                JOptionPane.showMessageDialog(this, "Student not found!");
-                return;
-            }
-            
-            // Delete student from database
-            db.deleteStudent(student);
-            JOptionPane.showMessageDialog(this, "Student deleted successfully!");
-            
-            // Clear input field
-            keyField.setText("");
-        });
 
-        // Back button action listener
-        backBtn.addActionListener(e -> showMainMenu());
+            // Back button
+            JButton backBtn = new JButton("Back");
+            backBtn.addActionListener(e -> showMainMenu());
+            JPanel btnPanel = new JPanel();
+            btnPanel.add(backBtn);
+            add(btnPanel, BorderLayout.SOUTH);
+            add(label, BorderLayout.NORTH);
 
-        // Create button panel
-        JPanel btnPanel = new JPanel();
-        btnPanel.add(deleteBtn);
-        btnPanel.add(backBtn);
+            revalidate();
+            repaint();
 
-        // Add components to frame
-        add(panel, BorderLayout.CENTER);
-        add(btnPanel, BorderLayout.SOUTH);
-        
-        // Refresh display
-        revalidate();
-        repaint();
+        } catch (Exception e) {
+            JLabel errorLabel = new JLabel("Error loading student data.", SwingConstants.CENTER);
+            add(errorLabel, BorderLayout.CENTER);
+            revalidate();
+            repaint();
+        }
     }
+
 
     /**
      * Displays the Search Student window
