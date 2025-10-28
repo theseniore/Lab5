@@ -1,5 +1,4 @@
 import javax.swing.*;
-import javax.swing.event.TableModelEvent;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.*;
@@ -29,11 +28,11 @@ public class GUI extends JFrame {
         JButton login = new JButton("Log in");
         JTextField username = new JTextField();
         JPasswordField password = new JPasswordField();
-        login.addActionListener(e -> {
+        login.addActionListener(e -> {//lambda expression
             if (Validation.isValiduser(username.getText(), password.getText())) {
                 showMainMenu();
             } else {
-                JOptionPane.showMessageDialog(null, "Invalid username or password!");
+                JOptionPane.showMessageDialog(null, "Invalid username or password!","Error",JOptionPane.WARNING_MESSAGE);
             }
         });
         login.setSize(50, 50);
@@ -42,7 +41,6 @@ public class GUI extends JFrame {
         panel.add(new JLabel("Password:"));
         panel.add(password);
         panel.add(login);
-        ;
      add(panel);
     }
 
@@ -52,7 +50,7 @@ public class GUI extends JFrame {
     private void showMainMenu() {
         // Clear current content
         getContentPane().removeAll();
-        
+
         // Create main panel with grid layout
         JPanel panel = new JPanel(new GridLayout(5, 1, 10, 10));
         panel.setBorder(BorderFactory.createEmptyBorder(40, 100, 40, 100));

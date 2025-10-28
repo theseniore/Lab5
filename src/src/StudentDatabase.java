@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 
 public class StudentDatabase extends FileHandling implements Database {
-    private final ArrayList <Student> Records;
+    private ArrayList <Student> Records;
     public StudentDatabase()
     {
         ArrayList<Student> loaded = FileHandling.loadFromFile();
