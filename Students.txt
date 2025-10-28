@@ -1,2 +1,1 @@
-9373,Youssef Hossam,15,Male,CCE,4.0
-9555,Ahmed,20,Male,CCE,2.0
+9373,Youssef Hossam,15,Male,A7A department,3.0

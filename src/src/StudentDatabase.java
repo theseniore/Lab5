@@ -67,43 +67,6 @@ public class StudentDatabase extends FileHandling implements Database {
         this.Records.remove(s);
         saveToFile(this.Records);
     }
-    public void updateStudentField(int id, String field, String newValue) {
-        for (Student s : Records) {
-            if (s.getStudentId() == id) {
-                switch (field) {
-                    case "Name":
-                        s.setFullName(newValue);
-                        break;
-                    case "Age":
-                        try {
-                            s.setAge(Integer.parseInt(newValue));
-                        } catch (NumberFormatException e) {
-                            System.out.println("Invalid age input");
-                        }
-                        break;
-                    case "Gender":
-                        s.setGender(newValue);
-                        break;
-                    case "Department":
-                        s.setDepartment(newValue);
-                        break;
-                    case "GPA":
-                        try {
-                            s.setGPA(Float.parseFloat(newValue));
-                        } catch (NumberFormatException e) {
-                            System.out.println("Invalid GPA input");
-                        }
-                        break;
-                    default:
-                        System.out.println("Invalid field name");
-                }
-                // Save the updated records
-                saveToFile(Records);
-                return; // stop after updating the correct student
-            }
-        }
-        System.out.println("Student with ID " + id + " not found.");
-    }
 
 }
 
