@@ -129,7 +129,7 @@ public class GUI extends JFrame {
                 
                 // Check if student ID already exists
                 if (db.contains(id)) {
-                    JOptionPane.showMessageDialog(this, "Student with this ID already exists!");
+                    JOptionPane.showMessageDialog(this, "Student with this ID already exists!","ERROR",JOptionPane.WARNING_MESSAGE);
                     return;
                 }
 
@@ -193,7 +193,8 @@ public class GUI extends JFrame {
         frame.setLayout(null);
 
         String[] columns = {"ID", "Name", "Age", "Gender", "Department", "GPA"};
-        DefaultTableModel model = new DefaultTableModel(columns, 0) {
+        DefaultTableModel model = new DefaultTableModel(columns, 0)
+        {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false;
@@ -649,10 +650,9 @@ public class GUI extends JFrame {
      * Main method - Entry point of the application
      */
     public static void main(String[] args) {
-        // Create and display the GUI on Event Dispatch Thread
-        SwingUtilities.invokeLater(() -> {
+
             new GUI().setVisible(true);
-        });
+
     }
 }
 
