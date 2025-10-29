@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 
+
 public interface Database {
     void addStudent(Student s);
     ArrayList<Student> getAllStudents();
